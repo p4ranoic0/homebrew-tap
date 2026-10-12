@@ -1,0 +1,41 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    steps:
+      - uses: actions/checkout@v5
+      - name: Set up Homebrew
+        run: |
+          if [[ "$RUNNER_OS" == Linux ]]; then
+            [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]] || NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            echo /home/linuxbrew/.linuxbrew/bin >> "$GITHUB_PATH"
+          fi
+      - name: Tap this checkout
+        run: brew tap p4ranoic0/tap "$GITHUB_WORKSPACE"
+      - name: Style and audit
+        if: runner.os == 'macOS'
+        run: |
+          brew style p4ranoic0/tap
+          brew audit --strict --online --tap p4ranoic0/tap
+      - name: Install and test
+        run: |
+          brew install p4ranoic0/tap/usage-relay
+          brew test p4ranoic0/tap/usage-relay
+          "$(brew --prefix)/bin/usage-relay" --version

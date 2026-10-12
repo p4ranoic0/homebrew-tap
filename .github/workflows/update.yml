@@ -1,0 +1,53 @@
+name: update
+
+# Points the formula at the newest AI·mana release, checks it on macOS and pushes the change.
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag (empty for the latest release)
+        required: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: macos-latest
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    steps:
+      - uses: actions/checkout@v5
+      - name: Update the formula
+        id: update
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          version="$(python3 Scripts/update-formula.py ${TAG:+"$TAG"})"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if [[ -z "$version" ]]; then echo "Formula is already current."; fi
+      - name: Commit locally
+        if: steps.update.outputs.version != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "usage-relay ${{ steps.update.outputs.version }}"
+      - name: Check the new formula
+        if: steps.update.outputs.version != ''
+        run: |
+          brew tap p4ranoic0/tap "$GITHUB_WORKSPACE"
+          brew style p4ranoic0/tap
+          brew audit --strict --online --tap p4ranoic0/tap
+          brew install p4ranoic0/tap/usage-relay
+          brew test p4ranoic0/tap/usage-relay
+          [[ "$("$(brew --prefix)/bin/usage-relay" --version)" == "usage-relay ${{ steps.update.outputs.version }}" ]]
+      - name: Push
+        if: steps.update.outputs.version != ''
+        run: git push origin HEAD:main
