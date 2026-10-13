@@ -6,23 +6,23 @@ class UsageRelay < Formula
   # The macOS tarball is a universal binary (arm64 and x86_64).
   on_macos do
     on_arm do
-      url "https://github.com/p4ranoic0/AI-mana/releases/download/v1.1.0/usage-relay-1.1.0-macos-universal.tar.gz"
-      sha256 "b4b806f85b8ba4e622525e45058775679671ccc77d3d7303713e24f732f9f3e3"
+      url "https://github.com/p4ranoic0/AI-mana/releases/download/v1.1.1/usage-relay-1.1.1-macos-universal.tar.gz"
+      sha256 "91819d83caa42e51c4e05eee3c6c8caaa5d1d51b669fd728587d103b59a3e7c4"
     end
     on_intel do
-      url "https://github.com/p4ranoic0/AI-mana/releases/download/v1.1.0/usage-relay-1.1.0-macos-universal.tar.gz"
-      sha256 "b4b806f85b8ba4e622525e45058775679671ccc77d3d7303713e24f732f9f3e3"
+      url "https://github.com/p4ranoic0/AI-mana/releases/download/v1.1.1/usage-relay-1.1.1-macos-universal.tar.gz"
+      sha256 "91819d83caa42e51c4e05eee3c6c8caaa5d1d51b669fd728587d103b59a3e7c4"
     end
   end
 
   on_linux do
     on_intel do
-      url "https://github.com/p4ranoic0/AI-mana/releases/download/v1.1.0/usage-relay-1.1.0-linux-x86_64.tar.gz"
-      sha256 "24f2eb0945e20bc123cee4ca6993a0027074b942458e385cd78c95493f584700"
+      url "https://github.com/p4ranoic0/AI-mana/releases/download/v1.1.1/usage-relay-1.1.1-linux-x86_64.tar.gz"
+      sha256 "d6acdd168e24cecf3ad6316421320304a0e7d1e1af26362fad3a7c794b24ebc4"
     end
     on_arm do
-      url "https://github.com/p4ranoic0/AI-mana/releases/download/v1.1.0/usage-relay-1.1.0-linux-aarch64.tar.gz"
-      sha256 "0f5f8214396567e7b1fe132dddb2bd05f03127e634a8e5ece71ceef2727e89e9"
+      url "https://github.com/p4ranoic0/AI-mana/releases/download/v1.1.1/usage-relay-1.1.1-linux-aarch64.tar.gz"
+      sha256 "c90dee01fe065d4a22e292ce21ed747a6d7afc7d44169357aac153421e0a7950"
     end
   end
 
