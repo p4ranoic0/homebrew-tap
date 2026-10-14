@@ -5,14 +5,19 @@ Usage: Scripts/update-formula.py [TAG]   (default: the latest release)
 Reads the release's SHA256SUMS.txt and rewrites every url/sha256 pair.
 Prints the new version, or nothing when the formula is already current.
 """
-import json, pathlib, re, sys, urllib.request
+import json, os, pathlib, re, sys, urllib.request
 
 REPO = "p4ranoic0/AI-mana"
 FORMULA = pathlib.Path(__file__).resolve().parent.parent / "Formula" / "usage-relay.rb"
 
 
 def fetch(url):
-    request = urllib.request.Request(url, headers={"User-Agent": "homebrew-tap-updater"})
+    headers = {"User-Agent": "homebrew-tap-updater"}
+    # Authenticated API calls avoid the shared runners' anonymous rate limit.
+    token = os.environ.get("GITHUB_TOKEN")
+    if token and url.startswith("https://api.github.com/"):
+        headers["Authorization"] = f"Bearer {token}"
+    request = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(request, timeout=60) as response:
         return response.read().decode()
 

@@ -29,6 +29,7 @@ jobs:
         id: update
         env:
           TAG: ${{ inputs.tag }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           version="$(python3 Scripts/update-formula.py ${TAG:+"$TAG"})"
           echo "version=$version" >> "$GITHUB_OUTPUT"
